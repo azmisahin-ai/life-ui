@@ -1,0 +1,113 @@
+# /**
+#  * @file docker-compose.yml
+#  * @author Azmi ŞAHİN (azmisahin@outlook.com)
+#  * @brief running multi-container Docker applications.
+#  * @version 0.2.1
+#  * @date 2024-01-01
+#  *
+#  * @copyright Copyright (c) 2024
+#  */
+version: '3.8'
+
+services:
+
+  application:
+
+    env_file: .env
+
+    build:
+      context: ../..
+      dockerfile: .docker/Dockerfile.$DISTRIB_ID
+      target: $APP_ENV
+
+      # Docker Arguments
+      args:
+
+        # environment
+        - APP_ENV=$APP_ENV
+        - APP_NAME=$APP_NAME
+
+        # build
+        - DISTRIB_ID=$DISTRIB_ID
+        - BASE_IMAGE=$BASE_IMAGE
+
+        # Physical
+        - WORKSPACE_FOLDER=$WORKSPACE_FOLDER
+        - PROJECT_FOLDER=$PROJECT_FOLDER
+        - DATA_FOLDER=$DATA_FOLDER
+
+        # DEPLOY
+
+        # SERVER
+        - HOST_IP=$HOST_IP
+        - HTTP_PORT=$HTTP_PORT
+        - HTTPS_PORT=$HTTPS_PORT
+        - TCP_PORT=$TCP_PORT
+        - SOCKET_PORT=$SOCKET_PORT
+        - HTTP_PORT_RANGE=$HTTP_PORT_RANGE
+        - HTTPS_PORT_RANGE=$HTTPS_PORT_RANGE
+        - TCP_PORT_RANGE=$TCP_PORT_RANGE
+        - SOCKET_PORT_RANGE=$SOCKET_PORT_RANGE
+
+        # SWICHS
+        - SWICH_TRACKING_TRACE=$SWICH_TRACKING_TRACE
+        - SWICH_TRACKING_DEBUG=$SWICH_TRACKING_DEBUG
+        - SWICH_TRACKING_INFO=$SWICH_TRACKING_INFO
+        - SWICH_TRACKING_WARN=$SWICH_TRACKING_WARN
+        - SWICH_TRACKING_ERROR=$SWICH_TRACKING_ERROR
+        - SWICH_TRACKING_VERBOSE=$SWICH_TRACKING_VERBOSE
+        - SWICH_TRACKING_REPORT=$SWICH_TRACKING_REPORT
+
+    # environment:
+    #   # Environment override
+    #   - FLASK_DEBUG=$SWICH_TRACKING_DEBUG
+    #   - FLASK_APP=src.web.app
+    #   - FLASK_RUN_HOST=$HOST_IP
+    #   - FLASK_RUN_PORT=$TCP_PORT
+
+    volumes:
+      # cached : Especially during development, mounting files into the Docker container can be faster thanks to this option.
+      - ../..:/workspaces/template
+      # our application environment and data
+      - data:/data
+
+    # must be launched in production environments
+    command: sleep infinity
+
+    ports:
+      # if you need to range
+      - "$HTTP_PORT_RANGE:$HTTP_PORT"
+      - "$HTTPS_PORT_RANGE:$HTTPS_PORT"
+      - "$TCP_PORT_RANGE:$TCP_PORT"
+      - "$SOCKET_PORT_RANGE:$SOCKET_PORT"
+
+    restart: "always"
+
+    # Monitors the health of a container based on criteria you specify.
+    # healthcheck:
+    #   test: [ "CMD", "curl", "-f", "http://$HOST_IP:$HTTP_PORT/" ]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    #   start_period: 60s
+
+    # base limitation
+    cpus: $RESOURCE_CPUS
+    mem_limit: $RESOURCE_MEMORY
+
+    deploy:
+      # for swarm
+      replicas: $SCALE
+      # base resources
+      resources:
+        # resources limitation
+        reservations:
+          devices:
+            - driver: nvidia
+              count: $RESOURCE_GPUS
+              capabilities:
+                - gpu
+          cpus: $RESOURCE_CPUS
+          memory: $RESOURCE_MEMORY
+volumes:
+  data:

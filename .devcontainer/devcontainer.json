@@ -1,0 +1,49 @@
+/**
+ * @file devcontainer.json
+ * @author Azmi ŞAHİN (azmisahin@outlook.com)
+ * @brief The development container allows you to use a container as a full-featured development environment.
+ * It can be used to allocate tools, libraries, or runtimes needed to run an application, work with a codebase, and assist with continuous integration and testing.
+ * Development containers can be run locally or remotely in a private or public cloud.
+ * @version 0.2.1
+ * @date 2024-01-01
+ *
+ * @copyright Copyright (c) 2024
+ */
+{
+  "name": "web service template flutter dart",
+  // Update the 'dockerComposeFile' list if you have more compose files or use different names.
+  // The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
+  "dockerComposeFile": [
+    "../.docker/development/docker-compose.yaml"
+  ],
+  "service": "application",
+  // pass the environment
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER_BASE_NAME": "${localWorkspaceFolderBasename}"
+  },
+  // for development
+  "workspaceFolder": "/workspaces/template",
+  // after the container has been created
+  "postCreateCommand": "chmod +x .devcontainer/postCreateCommand.sh && .devcontainer/postCreateCommand.sh",
+  //
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "git.authorName": "Azmi SAHIN",
+        "git.authorEmail": "azmisahin@outlook.com",
+        "git.defaultCloneDirectory": "${workspaceFolder}",
+        "git.autofetch": true,
+      },
+      "extensions": [
+        "hediet.vscode-drawio",
+        "ms-azuretools.vscode-docker",
+        "eamodio.gitlens",
+        "esbenp.prettier-vscode",
+        "mikestead.dotenv",
+        "Dart-Code.flutter",
+        "Dart-Code.dart-code"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}

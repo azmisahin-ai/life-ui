@@ -1,0 +1,205 @@
+# /**
+#  * @file dockerfile
+#  * @author Azmi ŞAHİN (azmisahin@outlook.com)
+#  * @brief Docker is the tool that provides operating system level virtualization, also known as "containerization".
+#  * @version 0.2.1
+#  * @date 2024-01-01
+#  *
+#  * @copyright Copyright (c) 2024
+#  */
+
+# Default images
+ARG BASE_IMAGE="debian:buster-slim"
+
+# Set non-interactive mode during build
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Base stage
+FROM $BASE_IMAGE AS base
+
+# Metadata indicating an image maintainer.
+LABEL maintainer.name="Azmi SAHIN"
+LABEL maintainer.email="azmisahin@outlook.com"
+
+# Build stage
+FROM base as build
+
+# Default Args
+ARG APP_ENV="production"
+ARG APP_NAME="template"
+ARG DISTRIB_ID="debian"
+
+# Physical
+ARG WORKSPACE_FOLDER="/workspaces"
+ARG PROJECT_FOLDER="/workspaces/template"
+ARG DATA_FOLDER="/data"
+
+# DEPLOY
+ARG RESOURCE_CPUS="0.8"
+ARG RESOURCE_GPUS="1"
+ARG RESOURCE_MEMORY="8GiB"
+ARG SCALE=1
+
+# SERVER
+ARG HOST_IP="0.0.0.0"
+ARG HTTP_PORT=80
+ARG HTTPS_PORT=443
+ARG TCP_PORT=3000
+ARG SOCKET_PORT=5000
+ARG HTTP_PORT_RANGE=8080-8090
+ARG HTTPS_PORT_RANGE=4443-4453
+ARG TCP_PORT_RANGE=3000-3010
+ARG SOCKET_PORT_RANGE=5000-5010
+
+# SWICHS
+ARG SWICH_TRACKING_TRACE="true"
+ARG SWICH_TRACKING_DEBUG="false"
+ARG SWICH_TRACKING_INFO="true"
+ARG SWICH_TRACKING_WARN="false"
+ARG SWICH_TRACKING_ERROR="true"
+ARG SWICH_TRACKING_VERBOSE="false"
+ARG SWICH_TRACKING_REPORT="false"
+
+# Default Env
+ENV APP_ENV=$APP_ENV
+ENV APP_NAME=$APP_NAME
+ENV DISTRIB_ID=$DISTRIB_ID
+
+# Physical
+ENV WORKSPACE_FOLDER=$WORKSPACE_FOLDER
+ENV PROJECT_FOLDER=$PROJECT_FOLDER
+ENV DATA_FOLDER=$DATA_FOLDER
+
+# DEPLOY
+ENV RESOURCE_CPUS=$RESOURCE_CPUS
+ENV RESOURCE_GPUS=$RESOURCE_GPUS
+ENV RESOURCE_MEMORY=$RESOURCE_MEMORY
+ENV SCALE=$SCALE
+
+# SERVER
+ENV HOST_IP=$HOST_IP
+ENV TCP_PORT=$TCP_PORT
+ENV TCP_RANGE=$TCP_RANGE
+
+# SWICHS
+ENV SWICH_TRACKING_TRACE=$SWICH_TRACKING_TRACE
+ENV SWICH_TRACKING_DEBUG=$SWICH_TRACKING_DEBUG
+ENV SWICH_TRACKING_INFO=$SWICH_TRACKING_INFO
+ENV SWICH_TRACKING_WARN=$SWICH_TRACKING_WARN
+ENV SWICH_TRACKING_ERROR=$SWICH_TRACKING_ERROR
+ENV SWICH_TRACKING_VERBOSE=$SWICH_TRACKING_VERBOSE
+ENV SWICH_TRACKING_REPORT=$SWICH_TRACKING_REPORT
+
+# Default port if you need
+EXPOSE $HTTP_PORT $HTTPS_PORT $TCP_PORT $SOCKET_PORT
+
+# Switch to work environment
+# If you are registered, you will remain at the root of the work environment.
+WORKDIR $PROJECT_FOLDER
+
+# Install base packages
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends \
+  bash \
+  && rm -rf /var/lib/apt/lists/*
+
+# Create the virtual environment
+
+
+
+
+# Development stage
+FROM build AS development
+
+# Install development packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    ca-certificates \
+    git \
+    curl \
+    vim \
+    nano \
+    clang \
+    cmake \
+    git \
+    ninja-build \
+    pkg-config \
+    libgtk-3-dev \
+    liblzma-dev \
+    libstdc++-12-dev \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Flutter install
+RUN git clone https://github.com/flutter/flutter.git /flutter
+
+# Flutter PATH
+ENV PATH="/flutter/bin:${PATH}"
+
+# Dart PATH
+ENV PATH="/flutter/bin/cache/dart-sdk/bin:${PATH}"
+
+RUN flutter
+
+# Copy only necessary files for development
+COPY . .
+
+# install development dependencies
+
+
+
+# Test stage
+FROM development AS test-build
+
+# Copy only necessary files for test
+# In the previous stage, we had copied everything.
+
+# install tests dependencies
+
+
+# switch to application folder
+WORKDIR $PROJECT_FOLDER/app
+
+# Install dependencies if necessary
+RUN flutter pub get
+
+# Compile the application
+RUN flutter build web
+
+# Serve compiled application using Nginx
+FROM nginx:alpine as test
+
+# ENV ile tanımlanan değişkeni kullan
+RUN echo "Test stage - PROJECT_FOLDER: $PROJECT_FOLDER"
+
+# Copy compiled files to server
+COPY --from=test-build /workspaces/template/.docker/test/command.sh /.docker/test/command.sh
+COPY --from=test-build /workspaces/template/app/build/web /usr/share/nginx/html
+
+
+# Run tests
+# If this stage is not successful, do not proceed to other stages.
+
+
+
+# Production stage
+FROM test-build AS production-build
+
+
+
+# install production dependencies
+
+
+# Serve compiled application using Nginx
+FROM nginx:alpine as production
+
+
+# Copy compiled files to server
+COPY --from=production-build /workspaces/template/.docker/command.sh /.docker/command.sh
+COPY --from=production-build /workspaces/template/app/build/web /usr/share/nginx/html
+
+# Application run
+# It allows the application to start automatically.
+# CMD ["/bin/bash", "-c", ".docker/command.sh"]
+
