@@ -1,0 +1,19 @@
+{
+  "@@locale": "en",
+  "dashboardTitle": "Dashboard",
+  "dataProcessingTitle": "Data Processing",
+  "analysisTitle": "Analysis",
+  "learningModelTitle": "Learning Model",
+  "simulationTitle": "Simulation",
+  "evaluationTitle": "Evaluation",
+  "settingsTitle": "Settings",
+  "appTitle": "App",
+  "dashboard": "Dashboard",
+  "data_processing": "Data Processing",
+  "analysis": "Analysis",
+  "learning_model": "Learning Model",
+  "simulation": "Simulation",
+  "evaluation": "Evaluation",
+  "settings": "Settings",
+  "Welcome": "Welcome!"
+}

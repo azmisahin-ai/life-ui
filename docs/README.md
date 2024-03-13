@@ -43,11 +43,11 @@
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/azmisahin/azmisahin-software-web-service-template-flutter-dart-v1
+   git clone https://github.com/azmisahin-ai/life-ui.git
    ```
 
 2. Navigate to the project directory:
 
    ```bash
-   cd azmisahin-software-web-service-template-flutter-dart-v1
+   cd life-ui
    ```
