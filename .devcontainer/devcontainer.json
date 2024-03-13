@@ -10,7 +10,7 @@
  * @copyright Copyright (c) 2024
  */
 {
-  "name": "web service template flutter dart",
+  "name": "life_ui",
   // Update the 'dockerComposeFile' list if you have more compose files or use different names.
   // The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
   "dockerComposeFile": [

@@ -58,12 +58,9 @@ services:
         - SWICH_TRACKING_VERBOSE=$SWICH_TRACKING_VERBOSE
         - SWICH_TRACKING_REPORT=$SWICH_TRACKING_REPORT
 
-    # environment:
-    #   # Environment override
-    #   - FLASK_DEBUG=$SWICH_TRACKING_DEBUG
-    #   - FLASK_APP=src.web.app
-    #   - FLASK_RUN_HOST=$HOST_IP
-    #   - FLASK_RUN_PORT=$TCP_PORT
+    environment:
+      # Environment override
+      - REMOTE_SERVICE_ADDRESS="http://127.0.0.1:8080"
 
     volumes:
       # cached : Especially during development, mounting files into the Docker container can be faster thanks to this option.

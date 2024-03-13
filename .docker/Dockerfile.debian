@@ -117,6 +117,7 @@ RUN apt-get update && \
     build-essential \
     ca-certificates \
     git \
+    git-flow \
     curl \
     vim \
     nano \
@@ -147,7 +148,11 @@ COPY . .
 
 # install development dependencies
 
+# switch to application folder
+WORKDIR $PROJECT_FOLDER/client
 
+# Install dependencies if necessary
+RUN flutter pub get
 
 # Test stage
 FROM development AS test-build
@@ -157,25 +162,18 @@ FROM development AS test-build
 
 # install tests dependencies
 
-
-# switch to application folder
-WORKDIR $PROJECT_FOLDER/app
-
-# Install dependencies if necessary
-RUN flutter pub get
-
 # Compile the application
 RUN flutter build web
 
 # Serve compiled application using Nginx
 FROM nginx:alpine as test
 
-# ENV ile tanımlanan değişkeni kullan
-RUN echo "Test stage - PROJECT_FOLDER: $PROJECT_FOLDER"
+# ENV 
+RUN echo "$APP_ENV stage - PROJECT_FOLDER: $PROJECT_FOLDER"
 
 # Copy compiled files to server
 COPY --from=test-build /workspaces/template/.docker/test/command.sh /.docker/test/command.sh
-COPY --from=test-build /workspaces/template/app/build/web /usr/share/nginx/html
+COPY --from=test-build /workspaces/template/client/build/web /usr/share/nginx/html
 
 
 # Run tests
@@ -194,10 +192,12 @@ FROM test-build AS production-build
 # Serve compiled application using Nginx
 FROM nginx:alpine as production
 
+# ENV 
+RUN echo "$APP_ENV stage - PROJECT_FOLDER: $PROJECT_FOLDER"
 
 # Copy compiled files to server
 COPY --from=production-build /workspaces/template/.docker/command.sh /.docker/command.sh
-COPY --from=production-build /workspaces/template/app/build/web /usr/share/nginx/html
+COPY --from=production-build /workspaces/template/client/build/web /usr/share/nginx/html
 
 # Application run
 # It allows the application to start automatically.

@@ -1,5 +1,5 @@
-name: app
-description: "template for Flutter and Dart Docker projects"
+name: ui
+description: "User interface to observe engineering work outputs"
 publish_to: "Application"
 version: 0.1.0
 
@@ -10,13 +10,19 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.1.0
+  http: ^1.2.1
+  mockito: ^5.4.4
   provider: ^6.1.2
-  socket_io_client: ^2.0.0
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.18.1
+   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
+  test: ^1.25.2
 
 flutter:
   uses-material-design: true
