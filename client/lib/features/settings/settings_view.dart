@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:ui/state/providers/theme_provider.dart';
 
 class SettingsView extends StatelessWidget {
-  const SettingsView({Key? key});
+  const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +36,11 @@ class SettingsView extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select Theme'),
+          title: const Text('Select Theme'),
           content: Column(
             children: [
               ListTile(
-                title: Text('Light Theme'),
+                title: const Text('Light Theme'),
                 onTap: () {
                   Provider.of<ThemeProvider>(context, listen: false)
                       .setTheme(ThemeData.light());
@@ -48,7 +48,7 @@ class SettingsView extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: Text('Dark Theme'),
+                title: const Text('Dark Theme'),
                 onTap: () {
                   Provider.of<ThemeProvider>(context, listen: false)
                       .setTheme(ThemeData.dark());

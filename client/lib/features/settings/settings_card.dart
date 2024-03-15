@@ -7,11 +7,11 @@ class SettingsCard extends StatelessWidget {
   final void Function()? onTap; // Değişiklik burada
 
   const SettingsCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
     required this.onTap,
-  }) : super(key: key); // Değişiklik burada
+  }); // Değişiklik burada
 
   @override
   Widget build(BuildContext context) {
