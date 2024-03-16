@@ -1,6 +1,6 @@
 // screen/layout.dart
 import 'package:flutter/material.dart';
-import 'package:ui/l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Layout extends StatelessWidget {
   const Layout({super.key});
@@ -12,7 +12,7 @@ class Layout extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            AppLocalizations.of(context).translate('Welcome'),
+            AppLocalizations.of(context)!.welcome,
             style: Theme.of(context).textTheme.displayLarge,
           ),
         ],

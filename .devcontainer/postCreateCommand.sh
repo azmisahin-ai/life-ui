@@ -45,6 +45,7 @@ echo SWICH_TRACKING_VERBOSE=$SWICH_TRACKING_VERBOSE
 echo SWICH_TRACKING_REPORT=$SWICH_TRACKING_REPORT
 
 # Application
+
 # Virtual environment
 
 # Automatically formatting

@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 class SettingsCard extends StatelessWidget {
   final String title;
   final IconData icon;
-  final void Function()? onTap; // Değişiklik burada
+  final void Function()? onTap;
 
   const SettingsCard({
-    super.key,
+    Key? key,
     required this.title,
     required this.icon,
     required this.onTap,
-  }); // Değişiklik burada
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

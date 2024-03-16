@@ -1,0 +1,13 @@
+{
+    "@@locale": "en",
+    "app_name":"ui",
+    "title":"Client",
+    "welcome":"Welcome",
+    "dashboard_view_title":"Dashboard",
+    "data_procession_view_title":"Data Processing",
+    "analysis_view_title":"Analysis",
+    "learning_model_view_title":"Learning Model",
+    "simulation_view_title":"Simulation", 
+    "evaluation_view_title":"Evaluation",
+    "settings_view_title":"Settings"
+}

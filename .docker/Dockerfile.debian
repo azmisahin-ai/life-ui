@@ -154,6 +154,9 @@ WORKDIR $PROJECT_FOLDER/client
 # Install dependencies if necessary
 RUN flutter pub get
 
+# Compile the application
+RUN flutter build web
+
 # Test stage
 FROM development AS test-build
 
