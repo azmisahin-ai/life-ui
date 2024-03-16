@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ui/features/simulation/simulation_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SimulationView extends StatelessWidget {
   const SimulationView({super.key});
@@ -10,14 +11,16 @@ class SimulationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: Text(AppLocalizations.of(context)!.simulation_title),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SimulationCard(title: 'Statistics', icon: Icons.show_chart),
+            SimulationCard(
+                title: AppLocalizations.of(context)!.settings_card_title,
+                icon: Icons.show_chart),
           ],
         ),
       ),

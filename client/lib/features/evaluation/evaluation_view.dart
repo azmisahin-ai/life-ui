@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ui/features/evaluation/evaluation_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class EvaluationView extends StatelessWidget {
   const EvaluationView({super.key});
@@ -10,14 +11,16 @@ class EvaluationView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Evaluation'),
+        title: Text(AppLocalizations.of(context)!.evaluation_title),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            EvaluationCard(title: 'Statistics', icon: Icons.show_chart),
+            EvaluationCard(
+                title: AppLocalizations.of(context)!.evaluation_card_title,
+                icon: Icons.show_chart),
           ],
         ),
       ),

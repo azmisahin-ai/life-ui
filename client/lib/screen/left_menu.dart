@@ -11,7 +11,7 @@ class LeftMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Menu(
       onMenuItemSelected: onMenuItemSelected,
-      projectName: AppLocalizations.of(context)!.app_name,
+      appName: AppLocalizations.of(context)!.app_name,
     );
   }
 }

@@ -12,7 +12,7 @@ class Layout extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            AppLocalizations.of(context)!.welcome,
+            AppLocalizations.of(context)!.app_welcome,
             style: Theme.of(context).textTheme.displayLarge,
           ),
         ],

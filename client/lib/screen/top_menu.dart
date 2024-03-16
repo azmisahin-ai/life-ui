@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TopMenu extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onMenuIconPressed;
@@ -11,7 +12,7 @@ class TopMenu extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text('Client'),
+      title: Text(AppLocalizations.of(context)!.app_name),
       actions: [
         IconButton(
           icon: const Icon(Icons.menu),

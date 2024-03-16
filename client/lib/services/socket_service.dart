@@ -2,7 +2,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 
 abstract class ISocketService {
@@ -19,6 +18,7 @@ class SocketService implements ISocketService {
   Future<bool> connect(String host, int port) async {
     try {
       _socket = await Socket.connect(host, port);
+
       return true;
     } catch (e) {
       if (kDebugMode) {
