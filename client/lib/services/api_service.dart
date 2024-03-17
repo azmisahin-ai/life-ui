@@ -30,6 +30,30 @@ class ApiService {
       throw ApiException('Failed to load data. Error: $error');
     }
   }
+
+  Future<Map<String, dynamic>> postData(
+      String path, Map<String, dynamic> body) async {
+    try {
+      final url = apiVersion != null
+          ? '$baseUrl/api/v$apiVersion/$path'
+          : '$baseUrl/$path';
+
+      final response = await http.post(
+        Uri.parse(url),
+        body: json.encode(body),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      } else {
+        throw Exception(
+            'Failed to send data. Status Code: ${response.statusCode}');
+      }
+    } catch (error) {
+      throw ApiException('Failed to send data. Error: $error');
+    }
+  }
 }
 
 class ApiException implements Exception {
