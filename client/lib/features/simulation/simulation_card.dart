@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:ui/repository/simulation_repository.dart';
 import 'package:ui/features/simulation/cards/simulation_particle_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SimulationCard extends StatelessWidget {
   final String title;
@@ -26,7 +27,7 @@ class SimulationCard extends StatelessWidget {
           onTap: () {},
         ),
         SimulationParticleCard(
-          title: "Particle",
+          title: AppLocalizations.of(context)!.simulation_particle_title,
           icon: Icons.show_chart,
           simulationRepository: simulationRepository,
         )

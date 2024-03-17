@@ -14,6 +14,7 @@
   "simulation_title": "Simulation",
   "simulation_card_title": "Simulation Options",
   "simulation_result_card_title": "Simulation result",
+  "simulation_particle_title":"Particle",
   "simulation_particle_start_failed": "Failed to start simulation",
   "simulation_particle_pause_failed": "Failed to pause simulation",
   "simulation_particle_stop_failed": "Failed to stop simulation",
