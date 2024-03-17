@@ -1,18 +1,19 @@
 // features/simulation/options/simulation_particle_card.dart
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ui/services/api_service.dart';
+import 'package:ui/repository/simulation_repository.dart';
 
 class SimulationParticleCard extends StatefulWidget {
   final String title;
   final IconData icon;
-  final ApiService apiService;
+  final SimulationRepository simulationRepository;
 
   const SimulationParticleCard({
     super.key,
     required this.title,
     required this.icon,
-    required this.apiService,
+    required this.simulationRepository,
   });
 
   @override
@@ -25,23 +26,64 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
   bool _isPaused = false;
 
   Future<void> _start() async {
-    setState(() {
-      _isStarted = true;
-      _isPaused = false;
-    });
+    try {
+      await widget.simulationRepository.startSimulation();
+      setState(() {
+        _isStarted = true;
+        _isPaused = false;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        // ignore: use_build_context_synchronously
+        _showErrorSnackbar(context, '$e');
+      } else {
+        // ignore: use_build_context_synchronously
+        _showErrorSnackbar(context, 'Failed to start simulation');
+      }
+    }
   }
 
   Future<void> _pause() async {
-    setState(() {
-      _isPaused = !_isPaused;
-    });
+    try {
+      await widget.simulationRepository.pauseSimulation();
+      setState(() {
+        _isPaused = !_isPaused;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        // ignore: use_build_context_synchronously
+        _showErrorSnackbar(context, '$e');
+      } else {
+        // ignore: use_build_context_synchronously
+        _showErrorSnackbar(context, 'Failed to pause simulation');
+      }
+    }
   }
 
   Future<void> _stop() async {
-    setState(() {
-      _isStarted = false;
-      _isPaused = false;
-    });
+    try {
+      await widget.simulationRepository.stopSimulation();
+      setState(() {
+        _isStarted = false;
+        _isPaused = false;
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        // ignore: use_build_context_synchronously
+        _showErrorSnackbar(context, '$e');
+      } else {
+        // ignore: use_build_context_synchronously
+        _showErrorSnackbar(context, 'Failed to stop simulation');
+      }
+    }
+  }
+
+  void _showErrorSnackbar(BuildContext context, String errorMessage) {
+    final snackBar = SnackBar(
+      content: Text(errorMessage),
+      backgroundColor: Colors.red,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override

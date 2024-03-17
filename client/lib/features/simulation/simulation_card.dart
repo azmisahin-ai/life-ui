@@ -1,19 +1,19 @@
 // features/simulation/simulation_card.dart
 
 import 'package:flutter/material.dart';
-import 'package:ui/services/api_service.dart';
+import 'package:ui/repository/simulation_repository.dart';
 import 'package:ui/features/simulation/options/simulation_particle_card.dart';
 
 class SimulationCard extends StatelessWidget {
   final String title;
   final IconData icon;
-  final ApiService apiService;
+  final SimulationRepository simulationRepository;
 
   const SimulationCard(
       {super.key,
       required this.title,
       required this.icon,
-      required this.apiService});
+      required this.simulationRepository});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class SimulationCard extends StatelessWidget {
         SimulationParticleCard(
           title: "Particle",
           icon: Icons.show_chart,
-          apiService: apiService,
+          simulationRepository: simulationRepository,
         )
       ],
     );
