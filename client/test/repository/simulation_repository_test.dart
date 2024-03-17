@@ -12,6 +12,12 @@ class MockApiService extends ApiService {
   Future<Map<String, dynamic>> fetchData(String path) async {
     return {'simulation_data': 'Simulation started'};
   }
+
+  @override
+  Future<Map<String, dynamic>> postData(
+      String path, Map<String, dynamic> body) async {
+    return {'simulation_data': 'Simulation started'};
+  }
 }
 
 void main() {
@@ -21,7 +27,10 @@ void main() {
     final simulationRepository = SimulationRepository(
         apiService: mockApiService, dataProvider: dataProvider);
 
-    await simulationRepository.startSimulation();
+    await simulationRepository.startSimulation(
+      numberOfParticles: '10',
+      timeStep: '0.1',
+    );
 
     expect(dataProvider.data.source, ['Simulation started']);
   });

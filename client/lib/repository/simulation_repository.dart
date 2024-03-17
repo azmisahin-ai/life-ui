@@ -9,10 +9,21 @@ class SimulationRepository {
 
   SimulationRepository({required this.apiService, required this.dataProvider});
 
-  Future<void> startSimulation() async {
+  Future<void> startSimulation({
+    required String numberOfParticles,
+    required String timeStep,
+  }) async {
     try {
-      final Map<String, dynamic> apiResponse =
-          await apiService.fetchData('simulation_start');
+      final Map<String, dynamic> requestData = {
+        'numberOfParticles': numberOfParticles,
+        'timeStep': timeStep,
+      };
+
+      final Map<String, dynamic> apiResponse = await apiService.postData(
+        'simulation_start',
+        requestData,
+      );
+
       final String simulationData = apiResponse['simulation_data'];
       dataProvider.data.addData(simulationData);
     } catch (e) {

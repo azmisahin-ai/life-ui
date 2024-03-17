@@ -15,7 +15,7 @@ class SimulationParticleCard extends StatefulWidget {
     required this.title,
     required this.icon,
     required this.simulationRepository,
-  }); // key parametresi üst sınıfa aktarıldı
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -26,9 +26,20 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
   bool _isStarted = false;
   bool _isPaused = false;
 
+  final TextEditingController _numberOfParticlesController =
+      TextEditingController();
+  final TextEditingController _timeStepController = TextEditingController();
+
   Future<void> _start() async {
     try {
-      await widget.simulationRepository.startSimulation();
+      final numberOfParticles = _numberOfParticlesController.text;
+      final timeStep = _timeStepController.text;
+
+      await widget.simulationRepository.startSimulation(
+        numberOfParticles: numberOfParticles,
+        timeStep: timeStep,
+      );
+
       setState(() {
         _isStarted = true;
         _isPaused = false;
@@ -38,12 +49,12 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
         // ignore: use_build_context_synchronously
         _showErrorSnackbar(context, '$e');
       } else {
-        // ignore: use_build_context_synchronously
         _showErrorSnackbar(
-            // ignore: use_build_context_synchronously
-            context,
-            // ignore: use_build_context_synchronously
-            AppLocalizations.of(context)!.simulation_particle_start_failed);
+          // ignore: use_build_context_synchronously
+          context,
+          // ignore: use_build_context_synchronously
+          AppLocalizations.of(context)!.simulation_particle_start_failed,
+        );
       }
     }
   }
@@ -59,12 +70,12 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
         // ignore: use_build_context_synchronously
         _showErrorSnackbar(context, '$e');
       } else {
-        // ignore: use_build_context_synchronously
         _showErrorSnackbar(
-            // ignore: use_build_context_synchronously
-            context,
-            // ignore: use_build_context_synchronously
-            AppLocalizations.of(context)!.simulation_particle_pause_failed);
+          // ignore: use_build_context_synchronously
+          context,
+          // ignore: use_build_context_synchronously
+          AppLocalizations.of(context)!.simulation_particle_pause_failed,
+        );
       }
     }
   }
@@ -81,12 +92,12 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
         // ignore: use_build_context_synchronously
         _showErrorSnackbar(context, '$e');
       } else {
-        // ignore: use_build_context_synchronously
         _showErrorSnackbar(
-            // ignore: use_build_context_synchronously
-            context,
-            // ignore: use_build_context_synchronously
-            AppLocalizations.of(context)!.simulation_particle_stop_failed);
+          // ignore: use_build_context_synchronously
+          context,
+          // ignore: use_build_context_synchronously
+          AppLocalizations.of(context)!.simulation_particle_stop_failed,
+        );
       }
     }
   }
@@ -108,6 +119,7 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
       title: Text(widget.title),
       children: [
         TextFormField(
+          controller: _numberOfParticlesController,
           decoration: InputDecoration(
             labelText:
                 localizations.simulation_particle_number_Of_particles_label,
@@ -117,6 +129,7 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
           keyboardType: TextInputType.number,
         ),
         TextFormField(
+          controller: _timeStepController,
           decoration: InputDecoration(
             labelText: localizations.simulation_particle_time_step_label,
             hintText: localizations
