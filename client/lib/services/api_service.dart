@@ -1,15 +1,21 @@
 // lib/services/api_service.dart
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ApiService {
   final String baseUrl;
+  final int? apiVersion;
 
-  ApiService({required this.baseUrl});
+  ApiService({required this.baseUrl, this.apiVersion});
 
   Future<Map<String, dynamic>> fetchData(String path) async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/$path'));
+      final url = apiVersion != null
+          ? '$baseUrl/api/v$apiVersion/$path'
+          : '$baseUrl/$path';
+
+      final response = await http.get(Uri.parse(url));
 
       if (response.statusCode == 200) {
         return json.decode(response.body);
