@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:ui/features/simulation/simulation_result.dart';
 import 'package:ui/repository/simulation_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,6 +31,8 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
       TextEditingController();
   final TextEditingController _timeStepController = TextEditingController();
 
+  Future<SimulationResult>? _simulationResult;
+
   Future<void> _start() async {
     final numberOfParticles = _numberOfParticlesController.text;
     final timeStep = _timeStepController.text;
@@ -51,10 +54,10 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
     }
 
     try {
-      await widget.simulationRepository.startSimulation(
+      _simulationResult = widget.simulationRepository.startSimulation(
         numberOfParticles: numberOfParticles,
         timeStep: timeStep,
-      );
+      ) as Future<SimulationResult>?;
 
       setState(() {
         _isStarted = true;
