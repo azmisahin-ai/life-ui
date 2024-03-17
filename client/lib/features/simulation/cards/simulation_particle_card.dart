@@ -1,4 +1,4 @@
-// features/simulation/options/simulation_particle_card.dart
+// features/simulation/cards/simulation_particle_card.dart
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +15,7 @@ class SimulationParticleCard extends StatefulWidget {
     required this.title,
     required this.icon,
     required this.simulationRepository,
-  });
+  }); // key parametresi üst sınıfa aktarıldı
 
   @override
   // ignore: library_private_types_in_public_api

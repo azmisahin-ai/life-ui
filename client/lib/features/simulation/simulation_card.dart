@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ui/repository/simulation_repository.dart';
-import 'package:ui/features/simulation/options/simulation_particle_card.dart';
+import 'package:ui/features/simulation/cards/simulation_particle_card.dart';
 
 class SimulationCard extends StatelessWidget {
   final String title;
