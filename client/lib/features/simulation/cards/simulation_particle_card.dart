@@ -31,10 +31,26 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
   final TextEditingController _timeStepController = TextEditingController();
 
   Future<void> _start() async {
-    try {
-      final numberOfParticles = _numberOfParticlesController.text;
-      final timeStep = _timeStepController.text;
+    final numberOfParticles = _numberOfParticlesController.text;
+    final timeStep = _timeStepController.text;
 
+    if (numberOfParticles.isEmpty || timeStep.isEmpty) {
+      _showErrorSnackbar(
+          context,
+          AppLocalizations.of(context)!
+              .simulation_particle_numberOf_particles_is_empty);
+      return;
+    }
+
+    if (!isNumeric(numberOfParticles) || !isFloat(timeStep)) {
+      _showErrorSnackbar(
+          context,
+          AppLocalizations.of(context)!
+              .simulation_particle_numberOf_Particles_is_numeric);
+      return;
+    }
+
+    try {
       await widget.simulationRepository.startSimulation(
         numberOfParticles: numberOfParticles,
         timeStep: timeStep,
@@ -57,6 +73,14 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
         );
       }
     }
+  }
+
+  bool isNumeric(String str) {
+    return double.tryParse(str) != null;
+  }
+
+  bool isFloat(String str) {
+    return double.tryParse(str) != null;
   }
 
   Future<void> _pause() async {
