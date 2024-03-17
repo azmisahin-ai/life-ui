@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:ui/features/simulation/options/simulation_particle_card.dart';
+
 class SimulationCard extends StatelessWidget {
   final String title;
   final IconData icon;
@@ -10,12 +12,19 @@ class SimulationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(
-        title,
-      ),
-      onTap: () {},
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        ListTile(
+          leading: Icon(icon),
+          title: Text(title),
+          onTap: () {},
+        ),
+        const SimulationParticleCard(
+          title: "Particle",
+          icon: Icons.show_chart,
+        )
+      ],
     );
   }
 }
