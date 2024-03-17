@@ -1,5 +1,3 @@
-// features/simulation/simulation_view.dart
-
 import 'package:flutter/material.dart';
 import 'package:ui/features/simulation/simulation_card.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,12 +13,22 @@ class SimulationView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SimulationCard(
+            Expanded(
+              child: SimulationCard(
                 title: AppLocalizations.of(context)!.settings_card_title,
-                icon: Icons.show_chart),
+                icon: Icons.show_chart,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: SimulationCard(
+                title: AppLocalizations.of(context)!.settings_card_title,
+                icon: Icons.show_chart,
+              ),
+            ),
           ],
         ),
       ),
