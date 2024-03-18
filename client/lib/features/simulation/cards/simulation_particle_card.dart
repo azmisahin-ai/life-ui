@@ -189,7 +189,7 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
           ),
         ),
         ElevatedButton(
-          onPressed: _stop,
+          onPressed: _isStarted ? _stop : null,
           child: Text(localizations.simulation_particle_stop_button),
         ),
       ],
