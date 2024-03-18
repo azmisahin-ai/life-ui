@@ -1,5 +1,6 @@
 // repository/simulation_repository.dart
 import 'package:flutter/foundation.dart';
+import 'package:ui/features/simulation/simulation_result.dart';
 import 'package:ui/services/api_service.dart';
 import 'package:ui/state/providers/data_provider.dart';
 
@@ -9,14 +10,14 @@ class SimulationRepository {
 
   SimulationRepository({required this.apiService, required this.dataProvider});
 
-  Future<void> startSimulation({
+  Future<SimulationResult> startSimulation({
     required String numberOfParticles,
     required String timeStep,
   }) async {
     try {
       final Map<String, dynamic> requestData = {
-        'numberOfParticles': numberOfParticles,
-        'timeStep': timeStep,
+        'number_of_particles': numberOfParticles,
+        'time_step': timeStep,
       };
 
       final Map<String, dynamic> apiResponse = await apiService.postData(
@@ -24,8 +25,26 @@ class SimulationRepository {
         requestData,
       );
 
-      final String simulationData = apiResponse['simulation_data'];
-      dataProvider.data.addData(simulationData);
+      final String status = apiResponse['status'];
+      final String numberOfParticlesResponse =
+          apiResponse['number_of_particles'];
+      final String timeStepResponse = apiResponse['time_step'];
+
+      if (status == 'started') {
+        print(
+            'Simulation started with $numberOfParticlesResponse particles and $timeStepResponse time step');
+
+        final Particle particle = Particle.fromJson(apiResponse['particle']);
+        final simulationResult = SimulationResult(
+          status: status,
+          numberOfParticles: int.parse(numberOfParticlesResponse),
+          timeStep: double.parse(timeStepResponse),
+          particle: particle,
+        );
+        return simulationResult;
+      } else {
+        throw SimulationException('Failed to start simulation');
+      }
     } catch (e) {
       if (kDebugMode) {
         print(e);
