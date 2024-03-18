@@ -9,7 +9,6 @@ import 'package:ui/repository/simulation_repository.dart';
 import 'package:ui/services/api_service.dart';
 import 'package:ui/state/providers/simulation_data_provider.dart';
 
-
 class SimulationView extends StatefulWidget {
   const SimulationView({super.key});
 
@@ -93,6 +92,7 @@ class _SimulationViewState extends State<SimulationView> {
                   title: AppLocalizations.of(context)!
                       .simulation_result_card_title,
                   icon: Icons.show_chart,
+                  simulationRepository: simulationRepository,
                 ),
               ),
             ],

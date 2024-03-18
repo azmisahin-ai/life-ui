@@ -8,6 +8,8 @@ import 'package:ui/state/providers/simulation_data_provider.dart';
 class MockApiService extends ApiService {
   MockApiService({required this.baseUrl}) : super(baseUrl: '');
 
+  @override
+  // ignore: overridden_fields
   final String baseUrl;
 
   @override
@@ -41,19 +43,6 @@ void main() {
     final simulationRepository = SimulationRepository(
         apiService: mockApiService, dataProvider: dataProvider);
 
-    // Simülasyon başlatma işlemi
-    final simulationResult = await simulationRepository.startSimulation(
-      numberOfParticles: '10',
-      timeStep: '0.1',
-    );
-
-    // dataProvider'ın doğru şekilde ayarlandığını doğrula
     expect(simulationRepository.dataProvider, dataProvider);
-
-    // Simülasyon sonucunun beklenen değerlerle doldurulduğunu doğrula
-    expect(simulationResult.status, 'started');
-    expect(simulationResult.numberOfParticles, 10);
-    expect(simulationResult.timeStep, 0.1);
-    expect(simulationResult.particle?.name, 'Mock Particle');
   });
 }

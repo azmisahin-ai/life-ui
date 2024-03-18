@@ -4,21 +4,22 @@ import 'package:flutter/foundation.dart';
 import 'package:ui/features/simulation/simulation_result.dart';
 import 'package:ui/services/api_service.dart';
 import 'package:ui/state/providers/simulation_data_provider.dart';
+import 'dart:async';
 
 class SimulationRepository {
   final ApiService apiService;
   final SimulationDataProvider dataProvider;
+  final StreamController<SimulationResult> _resultStreamController =
+      StreamController<SimulationResult>.broadcast();
 
   SimulationRepository({required this.apiService, required this.dataProvider});
 
-  Future<SimulationResult> startSimulation({
+  Stream<SimulationResult> get resultStream => _resultStreamController.stream;
+
+  Future<void> startSimulation({
     required String numberOfParticles,
     required String timeStep,
   }) async {
-    if (numberOfParticles == null || timeStep == null) {
-      throw SimulationException(
-          'Failed to start simulation: numberOfParticles or timeStep is null');
-    }
     try {
       final Map<String, dynamic> requestData = {
         'number_of_particles': numberOfParticles,
@@ -36,7 +37,7 @@ class SimulationRepository {
             _processSimulationResult(apiResponse);
         dataProvider
             .setSimulationResult(simulationResult); // Yeni veriyi güncelle
-        return simulationResult;
+        _resultStreamController.add(simulationResult); // Akışı güncelle
       } else {
         throw SimulationException('Failed to start simulation: Invalid status');
       }
@@ -93,7 +94,10 @@ class SimulationRepository {
   }
 
   Future<void> _fetchAndAddData(String path) async {
-    final Map<String, dynamic> apiResponse = await apiService.fetchData(path);
+  }
+
+  void dispose() {
+    _resultStreamController.close();
   }
 }
 

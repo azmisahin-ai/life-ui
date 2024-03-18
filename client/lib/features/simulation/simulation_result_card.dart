@@ -2,45 +2,73 @@
 
 import 'package:flutter/material.dart';
 import 'package:ui/features/simulation/simulation_result.dart';
+import 'package:ui/repository/simulation_repository.dart';
+import 'dart:async';
 
-class SimulationResultCard extends StatelessWidget {
+class SimulationResultCard extends StatefulWidget {
   final String title;
   final IconData icon;
-  final Future<SimulationResult>? simulationResult;
+  final SimulationRepository simulationRepository;
 
   const SimulationResultCard({
     Key? key,
     required this.title,
     required this.icon,
-    this.simulationResult,
+    required this.simulationRepository,
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
+  _SimulationResultCardState createState() => _SimulationResultCardState();
+}
+
+class _SimulationResultCardState extends State<SimulationResultCard> {
+  late StreamSubscription<SimulationResult> _resultSubscription;
+  SimulationResult? _currentResult;
+
+  @override
+  void initState() {
+    super.initState();
+    _resultSubscription =
+        widget.simulationRepository.resultStream.listen((result) {
+      setState(() {
+        _currentResult = result;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _resultSubscription.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SimulationResult>(
-      future: simulationResult,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final result = snapshot.data;
+    return ListTile(
+      leading: Icon(widget.icon),
+      title: Text(widget.title),
+      subtitle:
+          _currentResult != null ? _buildResultSubtitle() : Text('No result'),
+      onTap: () {},
+    );
+  }
 
-          // Yeni veri geldiğinde bileşeni güncellemek için
-          // bu noktada result değişkenini kullanabilirsiniz
-          // Örnek olarak:
-          // final newResult = result!.updatedData();
-          // veya setState kullanarak değişiklik yapabilirsiniz.
-
-          return ListTile(
-            leading: Icon(icon),
-            title: Text(title),
-            subtitle: Text(result != null ? result.status : 'No result'),
-            onTap: () {},
-          );
-        }
-      },
+  Widget _buildResultSubtitle() {
+    final result = _currentResult!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Status: ${result.status}'),
+        Text('Number of Particles: ${result.numberOfParticles}'),
+        Text('Time Step: ${result.timeStep}'),
+        if (result.particle != null) ...[
+          Text('Particle Name: ${result.particle!.name}'),
+          Text('Particle Charge: ${result.particle!.charge}'),
+          Text('Particle Mass: ${result.particle!.mass}'),
+          // Diğer tüm özellikleri de buraya ekleyebilirsiniz
+        ],
+      ],
     );
   }
 }

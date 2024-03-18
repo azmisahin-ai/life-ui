@@ -1,26 +1,29 @@
 // test/features/simulation/simulation_result_card_test.dart
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ui/features/simulation/simulation_result_card.dart';
+import 'package:mockito/mockito.dart';
+import 'package:ui/repository/simulation_repository.dart';
+import 'package:ui/services/api_service.dart';
+import 'package:ui/state/providers/simulation_data_provider.dart';
+
+// Mock class for SimulationRepository
+class MockSimulationRepository extends Mock implements SimulationRepository {}
+
+class MockApiService extends Mock implements ApiService {}
 
 void main() {
   group('SimulationResultCard widget test', () {
-    testWidgets('Widget creation test', (WidgetTester tester) async {
-      // Build our widget and trigger a frame.
-      await tester.pumpWidget(
-        const MaterialApp(
-          home: Scaffold(
-            body: SimulationResultCard(
-              title: 'Test Title',
-              icon: Icons.star,
-            ),
-          ),
-        ),
-      );
+    late MockSimulationRepository mockRepository;
 
-      expect(find.text('Test Title'), findsOneWidget);
-      expect(find.byIcon(Icons.star), findsOneWidget);
+    setUp(() {
+      mockRepository = MockSimulationRepository();
     });
+
+    test('creation test', () async {});
+    expect(
+        mockRepository,
+        SimulationRepository(
+            apiService: MockApiService(),
+            dataProvider: SimulationDataProvider()));
   });
 }

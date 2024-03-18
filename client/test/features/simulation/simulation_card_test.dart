@@ -23,6 +23,7 @@ void main() {
     expect(
         mockRepository,
         SimulationRepository(
-            apiService: MockApiService(), dataProvider: SimulationDataProvider()));
+            apiService: MockApiService(),
+            dataProvider: SimulationDataProvider()));
   });
 }
