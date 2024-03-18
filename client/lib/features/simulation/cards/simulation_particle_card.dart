@@ -61,8 +61,10 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
 
       _simulationResult?.then((value) {
         setState(() {
-          _isStarted = true;
-          _isPaused = false;
+          if (value.status == "started") {
+            _isStarted = true;
+            _isPaused = false;
+          }
         });
       }).catchError((error) {
         // Hata durumunu ele almak için gerekirse catchError ekleyebilirsiniz.
