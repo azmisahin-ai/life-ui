@@ -11,11 +11,11 @@ class SimulationResultCard extends StatefulWidget {
   final SimulationRepository simulationRepository;
 
   const SimulationResultCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.icon,
     required this.simulationRepository,
-  }) : super(key: key);
+  });
 
   @override
   // ignore: library_private_types_in_public_api
@@ -49,7 +49,7 @@ class _SimulationResultCardState extends State<SimulationResultCard> {
       leading: Icon(widget.icon),
       title: Text(widget.title),
       subtitle:
-          _currentResult != null ? _buildResultSubtitle() : Text('No result'),
+          _currentResult != null ? _buildResultSubtitle() : const Text('No result'),
       onTap: () {},
     );
   }
