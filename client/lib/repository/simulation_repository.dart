@@ -16,7 +16,7 @@ class SimulationRepository {
 
   Stream<SimulationResult> get resultStream => _resultStreamController.stream;
 
-  Future<void> startSimulation({
+  Future<SimulationResult> startSimulation({
     required String numberOfParticles,
     required String timeStep,
   }) async {
@@ -38,6 +38,7 @@ class SimulationRepository {
         dataProvider
             .setSimulationResult(simulationResult); // Yeni veriyi güncelle
         _resultStreamController.add(simulationResult); // Akışı güncelle
+        return simulationResult;
       } else {
         throw SimulationException('Failed to start simulation: Invalid status');
       }
@@ -93,8 +94,7 @@ class SimulationRepository {
     await _fetchAndAddData('simulation_stop');
   }
 
-  Future<void> _fetchAndAddData(String path) async {
-  }
+  Future<void> _fetchAndAddData(String path) async {}
 
   void dispose() {
     _resultStreamController.close();
