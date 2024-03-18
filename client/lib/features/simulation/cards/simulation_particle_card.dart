@@ -136,6 +136,50 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
     }
   }
 
+  Future<void> _getStatus() async {
+    try {
+      _simulationResult = widget.simulationRepository.getSimulationStatus();
+
+      _simulationResult?.then((value) {
+        if (value.status == "continues") {
+          setState(() {
+            _isStarted = true;
+            _isPaused = false;
+          });
+
+          _timeStepController.value =
+              TextEditingValue(text: value.timeStep.toString());
+          _numberOfParticlesController.value =
+              TextEditingValue(text: value.numberOfParticles.toString());
+        }
+
+        if (value.status == "stopped") {
+          setState(() {
+            _isStarted = false;
+            _isPaused = false;
+          });
+        }
+
+        if (value.status == "paused") {
+          setState(() {
+            _isPaused = !_isPaused;
+          });
+        }
+
+        if (value.status == "started") {
+          setState(() {
+            _isStarted = true;
+            _isPaused = false;
+          });
+        }
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print('Failed to get simulation status: $e');
+      }
+    }
+  }
+
   void _showErrorSnackbar(BuildContext context, String errorMessage) {
     final snackBar = SnackBar(
       content: Text(errorMessage),
@@ -191,6 +235,10 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
         ElevatedButton(
           onPressed: _isStarted ? _stop : null,
           child: Text(localizations.simulation_particle_stop_button),
+        ),
+        ElevatedButton(
+          onPressed: _getStatus,
+          child: Text(localizations.simulation_particle_get_status_button),
         ),
       ],
     );

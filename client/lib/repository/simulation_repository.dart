@@ -110,6 +110,12 @@ class SimulationRepository {
   void dispose() {
     _resultStreamController.close();
   }
+
+  Future<SimulationResult>? getSimulationStatus() async {
+    final SimulationResult simulationResult =
+        await _fetchAndAddData('simulation_status');
+    return simulationResult;
+  }
 }
 
 class SimulationException implements Exception {

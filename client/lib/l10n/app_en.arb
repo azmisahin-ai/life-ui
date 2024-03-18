@@ -26,6 +26,7 @@
   "simulation_particle_pause_button": "Pause",
   "simulation_particle_start_button": "Start",
   "simulation_particle_stop_button": "Stop",
+  "simulation_particle_get_status_button":"Status",
   "simulation_particle_numberOf_particles_is_empty": "Please fill in all fields.",
   "simulation_particle_numberOf_Particles_is_numeric": "Please enter valid numeric values.",
   "evaluation_title": "Evaluation",
