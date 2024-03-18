@@ -17,8 +17,8 @@ class SimulationRepository {
   Stream<SimulationResult> get resultStream => _resultStreamController.stream;
 
   Future<SimulationResult> startSimulation({
-    required String numberOfParticles,
-    required String timeStep,
+    required int? numberOfParticles,
+    required double? timeStep,
   }) async {
     try {
       final Map<String, dynamic> requestData = {
@@ -52,9 +52,9 @@ class SimulationRepository {
   }
 
   SimulationResult _processSimulationResult(Map<String, dynamic> apiResponse) {
-    final String numberOfParticlesResponse =
-        apiResponse['number_of_particles'] ?? '';
-    final String timeStepResponse = apiResponse['time_step'] ?? '';
+    final int numberOfParticlesResponse =
+        apiResponse['number_of_particles'] as int;
+    final double timeStepResponse = apiResponse['time_step'] as double;
 
     // Particle nesnesini oluşturmadan önce kontrol ediyoruz
     Particle? particle;
@@ -72,29 +72,40 @@ class SimulationRepository {
 
     final SimulationResult simulationResult = SimulationResult(
       status: status,
-      numberOfParticles: int.tryParse(numberOfParticlesResponse) ??
-          0, // Dönüşüm hatası durumunda 0 olarak ayarlanıyor
-      timeStep: double.tryParse(timeStepResponse) ??
-          0.0, // Dönüşüm hatası durumunda 0.0 olarak ayarlanıyor
+      numberOfParticles: numberOfParticlesResponse,
+      timeStep: timeStepResponse,
       particle: particle,
     );
 
     return simulationResult;
   }
 
-  Future<void> pauseSimulation() async {
-    await _fetchAndAddData('simulation_pause');
+  Future<SimulationResult> pauseSimulation() async {
+    final SimulationResult simulationResult =
+        await _fetchAndAddData('simulation_pause');
+    return simulationResult;
   }
 
-  Future<void> continueSimulation() async {
-    await _fetchAndAddData('simulation_continue');
+  Future<SimulationResult> continueSimulation() async {
+    final SimulationResult simulationResult =
+        await _fetchAndAddData('simulation_continue');
+    return simulationResult;
   }
 
-  Future<void> stopSimulation() async {
-    await _fetchAndAddData('simulation_stop');
+  Future<SimulationResult> stopSimulation() async {
+    final SimulationResult simulationResult =
+        await _fetchAndAddData('simulation_stop');
+    return simulationResult;
   }
 
-  Future<void> _fetchAndAddData(String path) async {}
+  Future<SimulationResult> _fetchAndAddData(String path) async {
+    final Map<String, dynamic> apiResponse = await apiService.fetchData(path);
+    final SimulationResult simulationResult =
+        _processSimulationResult(apiResponse);
+    dataProvider.setSimulationResult(simulationResult); // Yeni veriyi güncelle
+    _resultStreamController.add(simulationResult); // Akışı güncelle
+    return simulationResult;
+  }
 
   void dispose() {
     _resultStreamController.close();

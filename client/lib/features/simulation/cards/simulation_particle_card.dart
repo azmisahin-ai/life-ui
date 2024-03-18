@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ui/features/simulation/simulation_result.dart';
 import 'package:ui/repository/simulation_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -34,38 +35,23 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
   Future<SimulationResult>? _simulationResult;
 
   Future<void> _start() async {
-    final numberOfParticles = _numberOfParticlesController.text;
-    final timeStep = _timeStepController.text;
-
-    if (numberOfParticles.isEmpty || timeStep.isEmpty) {
-      _showErrorSnackbar(
-          context,
-          AppLocalizations.of(context)!
-              .simulation_particle_numberOf_particles_is_empty);
-      return;
-    }
-
-    if (!isNumeric(numberOfParticles) || !isFloat(timeStep)) {
-      _showErrorSnackbar(
-          context,
-          AppLocalizations.of(context)!
-              .simulation_particle_numberOf_Particles_is_numeric);
-      return;
-    }
+    final int? numberOfParticles =
+        int.tryParse(_numberOfParticlesController.text);
+    final double? timeStep = double.tryParse(_timeStepController.text);
 
     try {
       _simulationResult = widget.simulationRepository.startSimulation(
         numberOfParticles: numberOfParticles,
         timeStep: timeStep,
-      ) as Future<SimulationResult>?;
+      );
 
       _simulationResult?.then((value) {
-        setState(() {
-          if (value.status == "started") {
+        if (value.status == "started") {
+          setState(() {
             _isStarted = true;
             _isPaused = false;
-          }
-        });
+          });
+        }
       }).catchError((error) {
         // Hata durumunu ele almak için gerekirse catchError ekleyebilirsiniz.
         if (kDebugMode) {
@@ -99,9 +85,14 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
 
   Future<void> _pause() async {
     try {
-      await widget.simulationRepository.pauseSimulation();
-      setState(() {
-        _isPaused = !_isPaused;
+      _simulationResult = widget.simulationRepository.pauseSimulation();
+
+      _simulationResult?.then((value) {
+        if (value.status == "paused") {
+          setState(() {
+            _isPaused = !_isPaused;
+          });
+        }
       });
     } catch (e) {
       if (kDebugMode) {
@@ -120,10 +111,15 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
 
   Future<void> _stop() async {
     try {
-      await widget.simulationRepository.stopSimulation();
-      setState(() {
-        _isStarted = false;
-        _isPaused = false;
+      _simulationResult = widget.simulationRepository.stopSimulation();
+
+      _simulationResult?.then((value) {
+        if (value.status == "stopped") {
+          setState(() {
+            _isStarted = false;
+            _isPaused = false;
+          });
+        }
       });
     } catch (e) {
       if (kDebugMode) {
@@ -165,6 +161,9 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
                 .simulation_particle_enter_number_Of_particles_hint,
           ),
           keyboardType: TextInputType.number,
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly,
+          ],
         ),
         TextFormField(
           controller: _timeStepController,
@@ -173,7 +172,10 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
             hintText: localizations
                 .simulation_particle_enter_cycle_rate_Of_main_lifetime_hint,
           ),
-          keyboardType: TextInputType.number,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+          ],
         ),
         const SizedBox(height: 16),
         ElevatedButton(
