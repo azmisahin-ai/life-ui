@@ -5,6 +5,7 @@ import 'package:ui/features/simulation/simulation_result.dart';
 import 'package:ui/services/api_service.dart';
 import 'package:ui/state/providers/simulation_data_provider.dart';
 import 'dart:async';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SimulationRepository {
   final ApiService apiService;
@@ -20,6 +21,29 @@ class SimulationRepository {
     required int? numberOfParticles,
     required double? timeStep,
   }) async {
+    try {
+      IO.Socket socket = IO.io(apiService.baseUrl);
+      socket.onConnect((_) {
+        if (kDebugMode) {
+          print('socket connect');
+        }
+        socket.emit('get', '/api/v1/simulation_status');
+      });
+      socket.on(
+          '/api/v1/simulation_status',
+          (data) =>
+              {_resultStreamController.add(_processSimulationResult(data))});
+      socket.onDisconnect((_) {
+        if (kDebugMode) {
+          print('socket disconnect');
+        }
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+
     try {
       final Map<String, dynamic> requestData = {
         'number_of_particles': numberOfParticles,
