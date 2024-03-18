@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:ui/repository/simulation_repository.dart';
 import 'package:ui/services/api_service.dart';
-import 'package:ui/state/providers/data_provider.dart';
+import 'package:ui/state/providers/simulation_data_provider.dart';
 
 // Mock class for SimulationRepository
 class MockSimulationRepository extends Mock implements SimulationRepository {}
@@ -23,6 +23,6 @@ void main() {
     expect(
         mockRepository,
         SimulationRepository(
-            apiService: MockApiService(), dataProvider: DataProvider()));
+            apiService: MockApiService(), dataProvider: SimulationDataProvider()));
   });
 }

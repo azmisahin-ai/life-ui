@@ -1,12 +1,13 @@
 // repository/simulation_repository.dart
+
 import 'package:flutter/foundation.dart';
 import 'package:ui/features/simulation/simulation_result.dart';
 import 'package:ui/services/api_service.dart';
-import 'package:ui/state/providers/data_provider.dart';
+import 'package:ui/state/providers/simulation_data_provider.dart';
 
 class SimulationRepository {
   final ApiService apiService;
-  final DataProvider dataProvider;
+  final SimulationDataProvider dataProvider;
 
   SimulationRepository({required this.apiService, required this.dataProvider});
 
@@ -14,6 +15,10 @@ class SimulationRepository {
     required String numberOfParticles,
     required String timeStep,
   }) async {
+    if (numberOfParticles == null || timeStep == null) {
+      throw SimulationException(
+          'Failed to start simulation: numberOfParticles or timeStep is null');
+    }
     try {
       final Map<String, dynamic> requestData = {
         'number_of_particles': numberOfParticles,
@@ -25,53 +30,70 @@ class SimulationRepository {
         requestData,
       );
 
-      final String status = apiResponse['status'];
-      final String numberOfParticlesResponse =
-          apiResponse['number_of_particles'];
-      final String timeStepResponse = apiResponse['time_step'];
-
-      if (status == 'started') {
-        print(
-            'Simulation started with $numberOfParticlesResponse particles and $timeStepResponse time step');
-
-        final Particle particle = Particle.fromJson(apiResponse['particle']);
-        final simulationResult = SimulationResult(
-          status: status,
-          numberOfParticles: int.parse(numberOfParticlesResponse),
-          timeStep: double.parse(timeStepResponse),
-          particle: particle,
-        );
+      final String? status = apiResponse['status'];
+      if (status != null && status == 'started') {
+        final SimulationResult simulationResult =
+            _processSimulationResult(apiResponse);
+        dataProvider
+            .setSimulationResult(simulationResult); // Yeni veriyi güncelle
         return simulationResult;
       } else {
-        throw SimulationException('Failed to start simulation');
+        throw SimulationException('Failed to start simulation: Invalid status');
       }
     } catch (e) {
+      final errorMessage = 'Failed to start simulation. Error: $e';
       if (kDebugMode) {
-        print(e);
+        print(errorMessage);
       }
-      throw SimulationException('Failed to start simulation. Error: $e');
+      throw SimulationException(errorMessage);
     }
   }
 
+  SimulationResult _processSimulationResult(Map<String, dynamic> apiResponse) {
+    final String numberOfParticlesResponse =
+        apiResponse['number_of_particles'] ?? '';
+    final String timeStepResponse = apiResponse['time_step'] ?? '';
+
+    // Particle nesnesini oluşturmadan önce kontrol ediyoruz
+    Particle? particle;
+    if (apiResponse.containsKey('particle')) {
+      particle = Particle.fromJson(apiResponse['particle']);
+    }
+
+    if (kDebugMode) {
+      print(
+          'Simulation started with $numberOfParticlesResponse particles and $timeStepResponse time step');
+    }
+
+    // status alanının null olup olmadığını kontrol ediyoruz
+    final String status = apiResponse['status'] ?? 'unknown';
+
+    final SimulationResult simulationResult = SimulationResult(
+      status: status,
+      numberOfParticles: int.tryParse(numberOfParticlesResponse) ??
+          0, // Dönüşüm hatası durumunda 0 olarak ayarlanıyor
+      timeStep: double.tryParse(timeStepResponse) ??
+          0.0, // Dönüşüm hatası durumunda 0.0 olarak ayarlanıyor
+      particle: particle,
+    );
+
+    return simulationResult;
+  }
+
   Future<void> pauseSimulation() async {
-    final Map<String, dynamic> apiResponse =
-        await apiService.fetchData('simulation_pause');
-    final String simulationData = apiResponse['simulation_data'];
-    dataProvider.data.addData(simulationData);
+    await _fetchAndAddData('simulation_pause');
   }
 
   Future<void> continueSimulation() async {
-    final Map<String, dynamic> apiResponse =
-        await apiService.fetchData('simulation_continue');
-    final String simulationData = apiResponse['simulation_data'];
-    dataProvider.data.addData(simulationData);
+    await _fetchAndAddData('simulation_continue');
   }
 
   Future<void> stopSimulation() async {
-    final Map<String, dynamic> apiResponse =
-        await apiService.fetchData('simulation_stop');
-    final String simulationData = apiResponse['simulation_data'];
-    dataProvider.data.addData(simulationData);
+    await _fetchAndAddData('simulation_stop');
+  }
+
+  Future<void> _fetchAndAddData(String path) async {
+    final Map<String, dynamic> apiResponse = await apiService.fetchData(path);
   }
 }
 

@@ -46,8 +46,11 @@ class ApiService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
+      } else if (response.body != null) {
+        // Hata durumunda cevap gövdesi mevcutsa, bu gövdeyi kullanarak bir hata oluşturulabilir.
+        throw ApiException(json.decode(response.body)['message']);
       } else {
-        throw Exception(
+        throw ApiException(
             'Failed to send data. Status Code: ${response.statusCode}');
       }
     } catch (error) {

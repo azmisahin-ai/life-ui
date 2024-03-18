@@ -7,7 +7,8 @@ import 'package:ui/features/simulation/simulation_card.dart';
 import 'package:ui/features/simulation/simulation_result_card.dart';
 import 'package:ui/repository/simulation_repository.dart';
 import 'package:ui/services/api_service.dart';
-import 'package:ui/state/providers/data_provider.dart';
+import 'package:ui/state/providers/simulation_data_provider.dart';
+
 
 class SimulationView extends StatefulWidget {
   const SimulationView({super.key});
@@ -32,7 +33,7 @@ class _SimulationViewState extends State<SimulationView> {
     await _initializeApiService();
     final simulationRepository = SimulationRepository(
       apiService: _apiService,
-      dataProvider: DataProvider(),
+      dataProvider: SimulationDataProvider(),
     );
     setState(() {
       _simulationRepositoryFuture = Future.value(simulationRepository);

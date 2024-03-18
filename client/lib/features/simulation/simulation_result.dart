@@ -49,15 +49,16 @@ class Particle {
 
   factory Particle.fromJson(Map<String, dynamic> json) {
     return Particle(
-      name: json['name'],
-      charge: json['charge'],
-      mass: json['mass'],
-      spin: json['spin'],
-      lifetime: json['lifetime'],
-      energy: json['energy'],
-      position: Vector.fromJson(json['position']),
-      velocity: Vector.fromJson(json['velocity']),
-      momentum: Vector.fromJson(json['momentum']),
+      name: json['name'] ?? '', // Varsayılan olarak boş bir string
+      charge: json['charge'] ?? 0, // Varsayılan olarak 0
+      mass: json['mass'] ?? 0.0, // Varsayılan olarak 0.0
+      spin: json['spin'] ?? 0.0, // Varsayılan olarak 0
+      lifetime: json['lifetime'] ?? -1, // Varsayılan olarak 0.0
+      energy: json['energy'] ?? 0.0, // Varsayılan olarak 0.0
+      position: Vector.fromJson(
+          json['position'] ?? {}), // Varsayılan olarak boş bir Map
+      velocity: Vector.fromJson(json['velocity'] ?? {}),
+      momentum: Vector.fromJson(json['momentum'] ?? {}),
     );
   }
 }
@@ -75,9 +76,9 @@ class Vector {
 
   factory Vector.fromJson(Map<String, dynamic> json) {
     return Vector(
-      x: json['x'],
-      y: json['y'],
-      z: json['z'],
+      x: json['x'] ?? 0,
+      y: json['y'] ?? 0,
+      z: json['z'] ?? 0,
     );
   }
 }

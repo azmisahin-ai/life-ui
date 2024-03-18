@@ -59,9 +59,18 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
         timeStep: timeStep,
       ) as Future<SimulationResult>?;
 
-      setState(() {
-        _isStarted = true;
-        _isPaused = false;
+      _simulationResult?.then((value) {
+        setState(() {
+          _isStarted = true;
+          _isPaused = false;
+        });
+      }).catchError((error) {
+        // Hata durumunu ele almak için gerekirse catchError ekleyebilirsiniz.
+        if (kDebugMode) {
+          print('Error in starting simulation: $error');
+        }
+        _showErrorSnackbar(
+            context, 'Failed to start simulation. Error: $error');
       });
     } catch (e) {
       if (kDebugMode) {
