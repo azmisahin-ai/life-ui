@@ -48,8 +48,9 @@ class _SimulationResultCardState extends State<SimulationResultCard> {
     return ListTile(
       leading: Icon(widget.icon),
       title: Text(widget.title),
-      subtitle:
-          _currentResult != null ? _buildResultSubtitle() : const Text('No result'),
+      subtitle: _currentResult != null
+          ? _buildResultSubtitle()
+          : const Text('No result'),
       onTap: () {},
     );
   }
@@ -66,7 +67,12 @@ class _SimulationResultCardState extends State<SimulationResultCard> {
           Text('Particle Name: ${result.particle!.name}'),
           Text('Particle Charge: ${result.particle!.charge}'),
           Text('Particle Mass: ${result.particle!.mass}'),
-          // Diğer tüm özellikleri de buraya ekleyebilirsiniz
+          Text(
+              'Particle Position: x:${result.particle!.position.x} y:${result.particle!.position.y} z:${result.particle!.position.z}'),
+          Text(
+              'Particle Velocity: x:${result.particle!.velocity.x} y:${result.particle!.velocity.y} z:${result.particle!.velocity.z}'),
+          Text(
+              'Particle Momentum: x:${result.particle!.momentum.x} y:${result.particle!.momentum.y} z:${result.particle!.momentum.z}'),
         ],
       ],
     );
