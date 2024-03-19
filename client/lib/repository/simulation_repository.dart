@@ -82,8 +82,9 @@ class SimulationRepository {
 
     // Particle nesnesini oluşturmadan önce kontrol ediyoruz
     Particle? particle;
-    if (apiResponse.containsKey('particle')) {
-      particle = Particle.fromJson(apiResponse['particle']);
+    var particleJson = apiResponse['particle'];
+    if (particleJson != null) {
+      particle = Particle.fromJson(particleJson);
     }
 
     if (kDebugMode) {
