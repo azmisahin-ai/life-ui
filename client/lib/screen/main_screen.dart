@@ -1,5 +1,6 @@
 // screen/main_screen.dart
 import 'package:flutter/material.dart';
+import 'package:ui/features/simulation/simulation_view.dart';
 import 'package:ui/screen/layout.dart';
 import 'package:ui/screen/left_menu.dart';
 import 'package:ui/screen/right_menu.dart';
@@ -20,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _currentScreen = const Layout();
+    _currentScreen = const SimulationView();
   }
 
   void _onMenuItemSelected(Widget screen) {

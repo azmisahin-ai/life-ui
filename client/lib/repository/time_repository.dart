@@ -12,7 +12,7 @@ class TimeRepository {
   Future<String> getCurrentTime() async {
     try {
       final Map<String, dynamic> apiResponse =
-          await apiService.fetchData('api/v1/time');
+          await apiService.fetchData('time');
 
       final String currentTime = apiResponse['current_time'];
 

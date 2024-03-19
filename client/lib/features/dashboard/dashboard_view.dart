@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ui/features/dashboard/dashboard_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -10,14 +11,16 @@ class DashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dashboard'),
+        title: Text(AppLocalizations.of(context)!.dashboard_title),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DashboardCard(title: 'Statistics', icon: Icons.show_chart),
+            DashboardCard(
+                title: AppLocalizations.of(context)!.dashboard_card_title,
+                icon: Icons.show_chart),
           ],
         ),
       ),

@@ -41,7 +41,8 @@
         "esbenp.prettier-vscode",
         "mikestead.dotenv",
         "Dart-Code.flutter",
-        "Dart-Code.dart-code"
+        "Dart-Code.dart-code",
+        "Google.arb-editor"
       ]
     }
   },

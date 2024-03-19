@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:ui/features/data_processing/data_processing_card.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DataProcessingView extends StatelessWidget {
   const DataProcessingView({super.key});
@@ -10,14 +11,16 @@ class DataProcessingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Data Processing'),
+        title: Text(AppLocalizations.of(context)!.data_procession_title),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            DataProcessingCard(title: 'Statistics', icon: Icons.show_chart),
+            DataProcessingCard(
+                title: AppLocalizations.of(context)!.data_procession_card_title,
+                icon: Icons.show_chart),
           ],
         ),
       ),
