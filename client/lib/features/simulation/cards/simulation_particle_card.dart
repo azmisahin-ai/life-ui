@@ -205,55 +205,95 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
 
-    return ExpansionTile(
-      leading: Icon(widget.icon),
-      title: Text(widget.title),
-      children: [
-        TextFormField(
-          controller: _numberOfParticlesController,
-          decoration: InputDecoration(
-            labelText:
-                localizations.simulation_particle_number_Of_particles_label,
-            hintText: '###',
-            prefixIcon: const Icon(Icons.data_object), // Açıklama simgesi
-          ),
-          keyboardType: TextInputType.number,
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly,
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.all(16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(widget.icon),
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: _numberOfParticlesController,
+              decoration: InputDecoration(
+                labelText:
+                    localizations.simulation_particle_number_Of_particles_label,
+                hintText: '###',
+                prefixIcon: const Icon(Icons.scatter_plot),
+              ),
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              controller: _timeStepController,
+              decoration: InputDecoration(
+                labelText: localizations.simulation_particle_time_step_label,
+                hintText: '#.##',
+                prefixIcon: const Icon(Icons.timelapse),
+              ),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+              ],
+            ),
+            SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _isStarted ? (_isPaused ? _start : _pause) : _start,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: Text(
+                _isPaused
+                    ? localizations.simulation_particle_continue_button
+                    : (_isStarted
+                        ? localizations.simulation_particle_pause_button
+                        : localizations.simulation_particle_start_button),
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: _isStarted ? _stop : null,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: Text(
+                localizations.simulation_particle_stop_button,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: _getStatus,
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              child: Text(
+                localizations.simulation_particle_get_status_button,
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
           ],
         ),
-        TextFormField(
-          controller: _timeStepController,
-          decoration: InputDecoration(
-            labelText: localizations.simulation_particle_time_step_label,
-            hintText: '#.##',
-            prefixIcon: const Icon(Icons.timelapse), // Açıklama simgesi
-          ),
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
-          ],
-        ),
-        const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: _isStarted ? (_isPaused ? _start : _pause) : _start,
-          child: Text(
-            _isPaused
-                ? localizations.simulation_particle_continue_button
-                : (_isStarted
-                    ? localizations.simulation_particle_pause_button
-                    : localizations.simulation_particle_start_button),
-          ),
-        ),
-        ElevatedButton(
-          onPressed: _isStarted ? _stop : null,
-          child: Text(localizations.simulation_particle_stop_button),
-        ),
-        ElevatedButton(
-          onPressed: _getStatus,
-          child: Text(localizations.simulation_particle_get_status_button),
-        ),
-      ],
+      ),
     );
   }
 }
