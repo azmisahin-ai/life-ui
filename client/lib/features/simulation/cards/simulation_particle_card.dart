@@ -35,42 +35,40 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
   Future<SimulationResult>? _simulationResult;
 
   Future<void> _start() async {
-    final int? numberOfParticles =
-        int.tryParse(_numberOfParticlesController.text);
-    final double? timeStep = double.tryParse(_timeStepController.text);
+    if (_validateFields()) {
+      final int? numberOfParticles =
+          int.tryParse(_numberOfParticlesController.text);
+      final double? timeStep = double.tryParse(_timeStepController.text);
 
-    try {
-      _simulationResult = widget.simulationRepository.startSimulation(
-        numberOfParticles: numberOfParticles,
-        timeStep: timeStep,
-      );
-
-      _simulationResult?.then((value) {
-        if (value.status == "started") {
-          setState(() {
-            _isStarted = true;
-            _isPaused = false;
-          });
-        }
-      }).catchError((error) {
-        // Hata durumunu ele almak için gerekirse catchError ekleyebilirsiniz.
-        if (kDebugMode) {
-          print('Error in starting simulation: $error');
-        }
-        _showErrorSnackbar(
-            context, 'Failed to start simulation. Error: $error');
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        // ignore: use_build_context_synchronously
-        _showErrorSnackbar(context, '$e');
-      } else {
-        _showErrorSnackbar(
-          // ignore: use_build_context_synchronously
-          context,
-          // ignore: use_build_context_synchronously
-          AppLocalizations.of(context)!.simulation_particle_start_failed,
+      try {
+        _simulationResult = widget.simulationRepository.startSimulation(
+          numberOfParticles: numberOfParticles,
+          timeStep: timeStep,
         );
+
+        _simulationResult?.then((value) {
+          if (value.status == "started") {
+            setState(() {
+              _isStarted = true;
+              _isPaused = false;
+            });
+          }
+        }).catchError((error) {
+          if (kDebugMode) {
+            print('Error in starting simulation: $error');
+          }
+          _showErrorSnackbar(
+              context, 'Failed to start simulation. Error: $error');
+        });
+      } catch (e) {
+        if (kDebugMode) {
+          _showErrorSnackbar(context, '$e');
+        } else {
+          _showErrorSnackbar(
+            context,
+            AppLocalizations.of(context)!.simulation_particle_start_failed,
+          );
+        }
       }
     }
   }
@@ -110,30 +108,45 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
   }
 
   Future<void> _stop() async {
-    try {
-      _simulationResult = widget.simulationRepository.stopSimulation();
+    if (_isStarted) {
+      try {
+        _simulationResult = widget.simulationRepository.stopSimulation();
 
-      _simulationResult?.then((value) {
-        if (value.status == "stopped") {
-          setState(() {
-            _isStarted = false;
-            _isPaused = false;
-          });
+        _simulationResult?.then((value) {
+          if (value.status == "stopped") {
+            setState(() {
+              _isStarted = false;
+              _isPaused = false;
+            });
+            // Text alanlarının kilidini aç
+            _numberOfParticlesController.clear();
+            _timeStepController.clear();
+          }
+        });
+      } catch (e) {
+        if (kDebugMode) {
+          _showErrorSnackbar(context, '$e');
+        } else {
+          _showErrorSnackbar(
+            context,
+            AppLocalizations.of(context)!.simulation_particle_stop_failed,
+          );
         }
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        // ignore: use_build_context_synchronously
-        _showErrorSnackbar(context, '$e');
-      } else {
-        _showErrorSnackbar(
-          // ignore: use_build_context_synchronously
-          context,
-          // ignore: use_build_context_synchronously
-          AppLocalizations.of(context)!.simulation_particle_stop_failed,
-        );
       }
     }
+  }
+
+  bool _validateFields() {
+    if (_numberOfParticlesController.text.isEmpty ||
+        _timeStepController.text.isEmpty) {
+      _showErrorSnackbar(context, 'Fields cannot be empty');
+      return false;
+    } else if (!isNumeric(_numberOfParticlesController.text) ||
+        !isFloat(_timeStepController.text)) {
+      _showErrorSnackbar(context, 'Invalid input format');
+      return false;
+    }
+    return true;
   }
 
   Future<void> _getStatus() async {
@@ -201,8 +214,8 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
           decoration: InputDecoration(
             labelText:
                 localizations.simulation_particle_number_Of_particles_label,
-            hintText: localizations
-                .simulation_particle_enter_number_Of_particles_hint,
+            hintText: '###',
+            prefixIcon: const Icon(Icons.data_object), // Açıklama simgesi
           ),
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[
@@ -213,8 +226,8 @@ class _SimulationParticleCardState extends State<SimulationParticleCard> {
           controller: _timeStepController,
           decoration: InputDecoration(
             labelText: localizations.simulation_particle_time_step_label,
-            hintText: localizations
-                .simulation_particle_enter_cycle_rate_Of_main_lifetime_hint,
+            hintText: '#.##',
+            prefixIcon: const Icon(Icons.timelapse), // Açıklama simgesi
           ),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: <TextInputFormatter>[
