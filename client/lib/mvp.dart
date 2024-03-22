@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 serverAddress() {
-  return "http://127.0.0.1:8080";
+  return "http://127.0.0.1:8281";
 }
 
 void main() {
@@ -39,6 +39,7 @@ class SocketIOPage extends StatefulWidget {
 class _SocketIOPageState extends State<SocketIOPage> {
   String status = '';
   String instance = '';
+  String instanceCreated = '';
   String itemName = '';
   double lifeStartTime = 0.0;
   double elapsedLifespan = 0.0;
@@ -78,6 +79,8 @@ class _SocketIOPageState extends State<SocketIOPage> {
     socket.on('/simulation/status/instance', (data) {
       setState(() {
         instance = 'Number of instances: ${data['number_of_instance']}';
+        instanceCreated =
+            'instance created : ${data['number_of_instance_created']}';
       });
     });
 
@@ -216,6 +219,8 @@ class _SocketIOPageState extends State<SocketIOPage> {
             ),
             const SizedBox(height: 10),
             Text(instance),
+            const SizedBox(height: 10),
+            Text(instanceCreated),
             const SizedBox(height: 20),
             const Text(
               'Simulation Item:',
