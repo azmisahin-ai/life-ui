@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:socket_io_client/socket_io_client.dart' as io;
 
 serverAddress() {
-  return "http://127.0.0.1:8280";
+  return "http://127.0.0.1:8080";
 }
 
 void main() {
@@ -53,7 +53,7 @@ class _SocketIOPageState extends State<SocketIOPage> {
   Map<String, dynamic> velocity = {};
   Map<String, dynamic> momentum = {};
   Map<String, dynamic> waveFunction = {};
-  String? simulationType;
+  String? simulationType = "LifeCycle";
   int? numberOfInstance;
 
   late io.Socket socket;
@@ -157,10 +157,13 @@ class _SocketIOPageState extends State<SocketIOPage> {
                       children: [
                         const Text('Select Simulation Type:'),
                         DropdownButton<String>(
+                          isExpanded: true, // Genişliği otomatik olarak ayarlar
                           value: simulationType, // default value
                           onChanged: (String? newValue) {
                             setState(() {
-                              simulationType = newValue!;
+                              if (newValue != null) {
+                                simulationType = newValue;
+                              }
                             });
                           },
                           items: <String>['Particles', 'LifeCycle']
