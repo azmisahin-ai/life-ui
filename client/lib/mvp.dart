@@ -43,7 +43,7 @@ class _SocketIOPageState extends State<SocketIOPage> {
   String itemName = '';
   double lifeStartTime = 0.0;
   double elapsedLifespan = 0.0;
-  int lifecycleRatePerMinute = 0;
+
   double lifecycle = 0.0;
   double lifetimeSeconds = 0.0;
   double charge = 0.0;
@@ -54,8 +54,14 @@ class _SocketIOPageState extends State<SocketIOPage> {
   Map<String, dynamic> velocity = {};
   Map<String, dynamic> momentum = {};
   Map<String, dynamic> waveFunction = {};
-  String? simulationType = "LifeCycle";
+  String? simulationType = "Particles";
   int? numberOfInstance;
+  double parseLifetimeSeconds(dynamic value) {
+    if (value is String && value.toLowerCase() == "infinity") {
+      return double.infinity;
+    }
+    return value is num ? value.toDouble() : 0.0;
+  }
 
   late io.Socket socket;
 
@@ -70,13 +76,13 @@ class _SocketIOPageState extends State<SocketIOPage> {
       'transports': ['websocket'],
     });
 
-    socket.on('/simulation/status', (data) {
+    socket.on('simulation_status', (data) {
       setState(() {
         status = data['simulation_status'];
       });
     });
 
-    socket.on('/simulation/status/instance', (data) {
+    socket.on('simulation_sampler_status', (data) {
       setState(() {
         instance = 'Number of instances: ${data['number_of_instance']}';
         instanceCreated =
@@ -84,7 +90,7 @@ class _SocketIOPageState extends State<SocketIOPage> {
       });
     });
 
-    socket.on('/simulation/status/item', (data) {
+    socket.on('simulation_instance_status', (data) {
       setState(() {
         itemName = data.containsKey('name') ? data['name'] : 'N/A';
         lifeStartTime =
@@ -92,13 +98,11 @@ class _SocketIOPageState extends State<SocketIOPage> {
         elapsedLifespan = data.containsKey('elapsed_lifespan')
             ? data['elapsed_lifespan']
             : 0.0;
-        lifecycleRatePerMinute = data.containsKey('lifecycle_rate_per_minute')
-            ? data['lifecycle_rate_per_minute']
-            : 0;
+
         lifecycle = data.containsKey('lifecycle') ? data['lifecycle'] : 0.0;
-        lifetimeSeconds = data.containsKey('lifetime_seconds')
-            ? data['lifetime_seconds']
-            : 0.0;
+
+        // lifetime_seconds değerini analiz etme
+        lifetimeSeconds = parseLifetimeSeconds(data['lifetime_seconds']);
         charge = data.containsKey('charge') ? data['charge'] : 0.0;
         mass = data.containsKey('mass') ? data['mass'] : 0.0;
         spin = data.containsKey('spin') ? data['spin'] : 0.0;
@@ -120,10 +124,10 @@ class _SocketIOPageState extends State<SocketIOPage> {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode({
-        "simulation_status": "started",
-        "simulation_time_step": 1,
-        "simulation_type": simulationType,
         "number_of_instance": numberOfInstance,
+        // "lifetime_seconds": Null,
+        "lifecycle": 60 / 1,
+        "simulation_type": simulationType,
       }),
     );
 
@@ -169,7 +173,7 @@ class _SocketIOPageState extends State<SocketIOPage> {
                               }
                             });
                           },
-                          items: <String>['Particles', 'LifeCycle']
+                          items: <String>['Particles', 'Core']
                               .map<DropdownMenuItem<String>>(
                                 (String value) => DropdownMenuItem<String>(
                                   value: value,
@@ -230,7 +234,6 @@ class _SocketIOPageState extends State<SocketIOPage> {
             Text('Name: $itemName'),
             Text('Life Start Time: $lifeStartTime'),
             Text('Elapsed Lifespan: $elapsedLifespan'),
-            Text('Lifecycle Rate Per Minute: $lifecycleRatePerMinute'),
             Text('Lifecycle: $lifecycle'),
             Text('Lifetime Seconds: $lifetimeSeconds'),
             Text('Charge: $charge'),
