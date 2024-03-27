@@ -226,7 +226,7 @@ class _SocketIOPageState extends State<SocketIOPage> {
     simulationTypeController.text = "Particles";
     numberOfInstanceController.text = "20";
     lifecycleController.text = "0.1";
-    lifetimeSecondsController.text = "0.5";
+    lifetimeSecondsController.text = "60";
     return Scaffold(
       appBar: AppBar(
         title: Text(lastData),
