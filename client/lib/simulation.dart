@@ -119,7 +119,6 @@ class ThreeDPointPainter extends CustomPainter {
   }
 }
 
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -144,6 +143,12 @@ class _SocketIOPageState extends State<SocketIOPage> {
   late SocketService socketService = SocketService();
   late String connection = "";
   late String lastData = "";
+
+  TextEditingController numberOfInstanceController = TextEditingController();
+  TextEditingController lifetimeSecondsController = TextEditingController();
+  TextEditingController lifecycleController = TextEditingController();
+  TextEditingController simulationTypeController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -191,7 +196,11 @@ class _SocketIOPageState extends State<SocketIOPage> {
   }
 
   Future<void> startSimulation(
-      String simulationType, int numberOfInstance) async {
+    double numberOfInstance,
+    double lifeTimeSeconds,
+    double lifeCycle,
+    String simulationType,
+  ) async {
     final response = await http.post(
       Uri.parse('http://172.23.146.182:8281/socket/v1/simulation/start'),
       headers: <String, String>{
@@ -199,8 +208,8 @@ class _SocketIOPageState extends State<SocketIOPage> {
       },
       body: jsonEncode({
         "number_of_instance": numberOfInstance,
-        "lifetime_seconds": 60,
-        "lifecycle": 1 / 30,
+        "lifetime_seconds": lifeTimeSeconds,
+        "lifecycle": lifeCycle,
         "simulation_type": simulationType,
       }),
     );
@@ -214,27 +223,86 @@ class _SocketIOPageState extends State<SocketIOPage> {
 
   @override
   Widget build(BuildContext context) {
+    simulationTypeController.text = "Particles";
+    numberOfInstanceController.text = "20";
+    lifecycleController.text = "0.1";
+    lifetimeSecondsController.text = "0.5";
     return Scaffold(
       appBar: AppBar(
         title: Text(lastData),
       ),
-      body: Center(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return ThreeDVisualizationWidget(
-                oldData: oldData,
-                newData: newData,
-                size: constraints.biggest ?? Size.zero);
-          },
-        ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: numberOfInstanceController,
+              decoration: InputDecoration(
+                labelText: 'Number of Instance',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: lifetimeSecondsController,
+              decoration: InputDecoration(
+                labelText: 'Lifetime Seconds',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: lifecycleController,
+              decoration: InputDecoration(
+                labelText: 'Lifecycle',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: simulationTypeController,
+              decoration: InputDecoration(
+                labelText: 'Simulation Type',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Center(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return ThreeDVisualizationWidget(
+                    oldData: oldData,
+                    newData: newData,
+                    size: constraints.biggest ?? Size.zero,
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          startSimulation("Particles", 20);
+          startSimulation(
+            double.tryParse(numberOfInstanceController.text) ?? 0.1,
+            double.tryParse(lifetimeSecondsController.text) ?? 0.1,
+            double.tryParse(lifecycleController.text) ?? 0.1,
+            simulationTypeController.text,
+          );
         },
         backgroundColor: Colors.white,
-        child: Icon(Icons.network_wifi,
-            color: connection == 'Connected' ? Colors.green : Colors.red),
+        child: Icon(
+          Icons.network_wifi,
+          color: connection == 'Connected' ? Colors.green : Colors.red,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
