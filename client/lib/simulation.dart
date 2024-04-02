@@ -44,13 +44,15 @@ class ThreeDData {
   final double x;
   final double y;
   final double z;
-  final String name;
+  final String id;
+  final int generation;
 
   ThreeDData({
     required this.x,
     required this.y,
     required this.z,
-    required this.name,
+    required this.id,
+    required this.generation,
   });
 }
 
@@ -92,11 +94,6 @@ class ThreeDPointPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     newData.forEach((key, data) {
-      final paint = Paint()
-        ..color = stringToColor(key) // Anahtara göre renk belirle
-        ..strokeWidth = 10
-        ..strokeCap = StrokeCap.round;
-
       final double centerX = size.width / 2;
       final double centerY = size.height / 2;
 
@@ -104,10 +101,15 @@ class ThreeDPointPainter extends CustomPainter {
       final double x = data.x * scaleFactor;
       final double y = data.y * scaleFactor;
       final double z = data.z * scaleFactor;
+      final int generation = data.generation;
 
       final double adjustedX = centerX + x / 2;
       final double adjustedY = centerY + y / 2;
-
+      final double strokeWith = (10 * generation) as double;
+      final paint = Paint()
+        ..color = stringToColor(key) // Anahtara göre renk belirle
+        ..strokeWidth = strokeWith
+        ..strokeCap = StrokeCap.round;
       canvas.drawPoints(
           PointMode.points, [Offset(adjustedX, adjustedY)], paint);
     });
@@ -179,11 +181,12 @@ class _SocketIOPageState extends State<SocketIOPage> {
       // Eski veriyi yeni veri olarak güncelle
       oldData = newData;
       // Yeni veriyi güncelle
-      newData[data['name']] = ThreeDData(
+      newData[data['id'].toString()] = ThreeDData(
         x: double.parse(data['position']['x'].toString()),
         y: double.parse(data['position']['y'].toString()),
         z: double.parse(data['position']['z'].toString()),
-        name: data['name'],
+        id: data['id'].toString(),
+        generation: data['generation'],
       );
       lastData = data['position'].toString();
     });
@@ -224,9 +227,9 @@ class _SocketIOPageState extends State<SocketIOPage> {
   @override
   Widget build(BuildContext context) {
     simulationTypeController.text = "Particles";
-    numberOfInstanceController.text = "20";
-    lifecycleController.text = "0.1";
-    lifetimeSecondsController.text = "60";
+    numberOfInstanceController.text = "1";
+    lifecycleController.text = "0.01";
+    lifetimeSecondsController.text = "1";
     return Scaffold(
       appBar: AppBar(
         title: Text(lastData),
