@@ -1,8 +1,10 @@
 // main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ui/app/app.dart';
 import 'package:ui/state/providers/theme_provider.dart';
+// import 'package:ui/app/app.dart';
+// import 'package:ui/mvp.dart';
+import 'package:ui/simulation.dart';
 
 void main() async {
   runApp(
@@ -10,7 +12,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
-      child: const App(),
+      child: MyApp(),
     ),
   );
 }

@@ -29,10 +29,12 @@ class SimulationRepository {
         }
         socket.emit('get', '/api/v1/simulation_status');
       });
-      socket.on(
-          '/api/v1/simulation_status',
-          (data) =>
-              {_resultStreamController.add(_processSimulationResult(data))});
+      socket.on('/api/v1/simulation_status', (data) {
+        if (kDebugMode) {
+          print(data);
+        }
+        _resultStreamController.add(_processSimulationResult(data));
+      });
       socket.onDisconnect((_) {
         if (kDebugMode) {
           print('socket disconnect');
@@ -82,8 +84,9 @@ class SimulationRepository {
 
     // Particle nesnesini oluşturmadan önce kontrol ediyoruz
     Particle? particle;
-    if (apiResponse.containsKey('particle')) {
-      particle = Particle.fromJson(apiResponse['particle']);
+    var particleJson = apiResponse['particle'];
+    if (particleJson != null) {
+      particle = Particle.fromJson(particleJson);
     }
 
     if (kDebugMode) {

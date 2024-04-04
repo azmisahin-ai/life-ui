@@ -244,10 +244,10 @@ packages:
     dependency: transitive
     description:
       name: js
-      sha256: c1b2e9b5ea78c45e1a0788d29606ba27dc5f71f019f32ca5140f61ef071838cf
+      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.1"
+    version: "0.6.7"
   leak_tracker:
     dependency: transitive
     description:
@@ -425,18 +425,18 @@ packages:
     dependency: "direct main"
     description:
       name: socket_io_client
-      sha256: "15c9deae04e2b21065adbe864a641e0a5fc2499ff4c89e98a3877aea22ce841c"
+      sha256: ede469f3e4c55e8528b4e023bdedbc20832e8811ab9b61679d1ba3ed5f01f23b
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-beta.2"
+    version: "2.0.3+1"
   socket_io_common:
     dependency: transitive
     description:
       name: socket_io_common
-      sha256: "5ad0f12e1b17f4300b0d6a27feaf1b7c1153ca21498ba307f0297b81449f7a44"
+      sha256: "2ab92f8ff3ebbd4b353bf4a98bee45cc157e3255464b2f90f66e09c4472047eb"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0-beta.0"
+    version: "2.0.3"
   source_gen:
     dependency: transitive
     description:
@@ -545,10 +545,10 @@ packages:
     dependency: transitive
     description:
       name: vm_service
-      sha256: e7d5ecd604e499358c5fe35ee828c0298a320d54455e791e9dcf73486bc8d9f0
+      sha256: a75f83f14ad81d5fe4b3319710b90dec37da0e22612326b696c9e1b8f34bbf48
       url: "https://pub.dev"
     source: hosted
-    version: "14.1.0"
+    version: "14.2.0"
   watcher:
     dependency: transitive
     description:
